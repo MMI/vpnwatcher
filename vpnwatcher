@@ -1,0 +1,48 @@
+#!/bin/bash
+#
+# vpnwatcher
+#
+# Copyright (c) 2017 by Georg Nikodym <georg.nikodym@gmail.com>
+#
+# This program is released under the WTFPL version 2.
+#	https://en.wikipedia.org/wiki/WTFPL
+#
+
+maybe_echo(){
+    test -z "$QUIET" && echo $@
+}
+
+if [ "$1" = "-q" -o "$1" = "--quiet" ]
+then
+    QUIET=1
+fi
+
+IF=ppp0
+
+while true
+do
+    PID=$(pgrep uTorrent)
+    if [ ! "$PID" ]
+    then
+	sleep 5
+	continue
+    fi
+    
+    STATE=$(ps -lp $PID | awk '/uTorrent/ {print $11}')
+    ifconfig $IF >/dev/null 2>&1
+    if [ $? -eq 0 ] 
+    then
+	if [ $STATE = T ]
+	then
+	    maybe_echo Continuing uTorrent $PID
+	    kill -CONT $PID
+	fi
+    else
+	if [ $STATE = S ]
+	then
+	    maybe_echo Stopping uTorrent $PID
+	    kill -STOP $PID
+	fi
+    fi
+    sleep 5
+done
