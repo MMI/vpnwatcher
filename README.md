@@ -7,8 +7,8 @@ connection is down, it will stop uTorrent (by sending SIGSTOP). When
 the VPN connection comes back up, it will resume uTorrent (by sending
 SIGCONT).
 
-## Details
+**Details**
 
-* Developed and testing on MacOS 10.12
+* Developed and tested on MacOS 10.12
 * assumes VPN up/down based on the presence of a ppp0 interface
 * cycles every 5 seconds
